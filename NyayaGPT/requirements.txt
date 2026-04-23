@@ -1,0 +1,48 @@
+# ── Core ML stack (already installed) ──────────────────────────────────────
+unsloth>=2024.12
+trl>=0.12.0
+transformers>=4.46.0
+peft>=0.13.0
+datasets>=3.0.0
+accelerate>=1.0.0
+bitsandbytes>=0.44.0
+
+# llama-cpp-python for GGUF teacher + INT4 inference
+# Default pip wheel is CPU-only. For CUDA on RTX 5090 (Blackwell, sm_120),
+# rebuild from source using the venv's own python (avoids broken pip shebangs):
+#   CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=120" \
+#     python -m pip install --no-binary llama-cpp-python --no-cache-dir llama-cpp-python==0.3.17
+# Verify: python -c "from llama_cpp import llama_cpp; print(llama_cpp.llama_supports_gpu_offload())"
+llama-cpp-python==0.3.17
+
+# ── Evaluation ───────────────────────────────────────────────────────────────
+rouge-score>=0.1.2
+ragas>=0.1.0
+
+# ── MLflow experiment tracking ───────────────────────────────────────────────
+mlflow>=2.14.0
+
+# ── Data collection ──────────────────────────────────────────────────────────
+requests>=2.32.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0               # faster HTML parser for BeautifulSoup
+
+# ── Azure OpenAI (synthetic data generation) ─────────────────────────────────
+openai>=1.40.0
+python-dotenv>=1.0.0      # load .env credentials in notebooks
+
+# ── A/B Dashboard + serving ──────────────────────────────────────────────────
+streamlit>=1.35.0
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+httpx>=0.27.0             # async HTTP for A/B routing
+
+# ── HF Spaces demo ───────────────────────────────────────────────────────────
+gradio>=4.40.0
+
+# ── Visualisation ────────────────────────────────────────────────────────────
+matplotlib>=3.9.0
+pandas>=2.2.0
+
+# ── Notebook support ─────────────────────────────────────────────────────────
+ipywidgets>=8.1.0

@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Knowledge Distillation Pipeline — runtime dependencies
+# ─────────────────────────────────────────────────────────────────────────────
+# Pinned to versions known to work with:
+#   • Python 3.10+
+#   • CUDA 12.9 / Blackwell (sm_120) GPUs
+#
+# NOTE on llama-cpp-python:
+# 0.3.18 ships MXFP4 kernels that ptxas can't compile for sm_120 — pin
+# to 0.3.17 and rebuild from source with:
+#   CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=120" \
+#   CUDAARCHS="120" \
+#   pip install --no-binary :all: llama-cpp-python==0.3.17
+# ─────────────────────────────────────────────────────────────────────────────
+
+# PDF extraction
+PyMuPDF==1.24.10        # `fitz` — fast page text extraction
+pdfplumber==0.11.4      # table detection (slower but better at tables)
+
+# Teacher model inference (build from source — see note above)
+llama-cpp-python==0.3.17
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Student fine-tuning (only needed for `python -m kd_pipeline.train`)
+# ─────────────────────────────────────────────────────────────────────────────
+# Unsloth requires a recent torch + CUDA. On Blackwell (sm_120) you need
+# torch built against CUDA 12.6 or newer:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu124
+# (cu124 wheels include sm_120 PTX as of torch 2.5+)
+unsloth>=2024.12
+trl>=0.12.0
+transformers>=4.46.0
+datasets>=3.0.0
+peft>=0.13.0
+accelerate>=1.0.0
+bitsandbytes>=0.44.0
+

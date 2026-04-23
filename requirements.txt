@@ -1,0 +1,11 @@
+torch 
+torchvision 
+torchaudio 
+xformers
+unsloth
+transformers==4.56.2
+trl==0.22.2
+numpy
+llama-cpp-python==0.1.80
+pdfplumber==0.11.1
+pymupdf

@@ -1,0 +1,47 @@
+.codex
+
+# Python environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Local environment / secrets
+.env
+*.env
+
+# Logs
+logs/
+*.log
+
+# Build / cache artifacts
+.cache/
+dist/
+build/
+*.egg-info/
+unsloth_compiled_cache/
+NyayaGPT/unsloth_compiled_cache/
+
+# Training / experiment outputs
+outputs/
+output/
+*/output/
+checkpoint-*/
+mlruns/
+*/mlruns/
+
+# Model artifacts
+adapters/
+adapters-*/
+merged_model/
+*/adapters/
+*/adapters-*/
+*/merged_model/
+
+# Downloaded installers / packages
+*.deb
+*.deb.*
