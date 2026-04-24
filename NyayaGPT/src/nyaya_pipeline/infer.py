@@ -4,8 +4,9 @@ infer.py — Inference + A/B routing for NyayaGPT.
 Provides:
   1. Single-shot generation (for evaluation scripts)
   2. Interactive REPL
-  3. A/B routing: randomly routes to base or fine-tuned, logs to MLflow
+  3. A/B routing: randomly labels a request between two deployment variants
 """
+import os
 import random
 import sys
 import time
@@ -19,6 +20,12 @@ from .logger import get_logger
 log = get_logger(__name__)
 
 _model_cache: dict = {}
+_gguf_cache: dict = {}
+
+GGUF_SCRATCH_DIR = Path(os.environ.get("NY_GGUF_SCRATCH_DIR", "/mnt/f/NyayaGPT-scratch"))
+NYAYAGPT_FP16_GGUF = Path(os.environ.get("NY_FP16_GGUF_PATH", GGUF_SCRATCH_DIR / "nyayagpt-fp16.gguf"))
+NYAYAGPT_Q8_GGUF = Path(os.environ.get("NY_INT8_GGUF_PATH", GGUF_SCRATCH_DIR / "nyayagpt-q8_0.gguf"))
+NYAYAGPT_Q4_GGUF = Path(os.environ.get("NY_INT4_GGUF_PATH", config.ADAPTER_DIR / "nyayagpt-q4km.gguf"))
 
 
 def _load_model(model_name: str, adapter_dir: Optional[Path] = None):
@@ -83,32 +90,105 @@ def generate(
     return tokenizer.decode(out[0][n_in:], skip_special_tokens=True).strip()
 
 
+def _load_gguf_model(gguf_path: Path):
+    gguf_path = Path(gguf_path)
+    cache_key = str(gguf_path.resolve())
+    if cache_key in _gguf_cache:
+        return _gguf_cache[cache_key]
+
+    if not gguf_path.exists():
+        raise InferenceError(f"GGUF not found: {gguf_path}")
+
+    try:
+        from llama_cpp import Llama
+    except ImportError as exc:
+        raise InferenceError("llama-cpp-python not installed") from exc
+
+    log.info("Loading GGUF model: %s", gguf_path)
+    log.info("(silent for ~20s while weights transfer to GPU)")
+
+    # Suppress verbose C++ stderr during load to keep notebooks responsive.
+    import ctypes
+    _old_stderr_fd = os.dup(2)
+    _devnull_fd = os.open(os.devnull, os.O_WRONLY)
+    os.dup2(_devnull_fd, 2)
+    os.close(_devnull_fd)
+    try:
+        llm = Llama(
+            model_path=str(gguf_path),
+            n_ctx=2048,
+            n_gpu_layers=-1,
+            flash_attn=True,
+            verbose=False,
+        )
+    finally:
+        os.dup2(_old_stderr_fd, 2)
+        os.close(_old_stderr_fd)
+
+    _gguf_cache[cache_key] = llm
+    return llm
+
+
+def generate_gguf(
+    question: str,
+    gguf_path: Path,
+    max_new_tokens: int = 256,
+    temperature: float = 0.2,
+    system_prompt: Optional[str] = None,
+) -> str:
+    llm = _load_gguf_model(gguf_path)
+    prompt = f"[INST] {(system_prompt or config.SYSTEM_PROMPT).strip()}\n\n{question.strip()}[/INST]"
+
+    out = llm(
+        prompt,
+        max_tokens=max_new_tokens,
+        temperature=temperature,
+        repeat_penalty=1.1,
+    )
+    return out["choices"][0]["text"].strip()
+
+
 def ab_generate(
     question: str,
-    base_model: str = "mistralai/Mistral-7B-Instruct-v0.3",
+    base_model: Optional[str] = None,
     finetuned_model: Optional[str] = None,
     adapter_dir: Optional[Path] = None,
     max_new_tokens: int = 256,
 ) -> Tuple[str, str, str, float, float]:
     """
-    A/B routing: randomly pick base or fine-tuned, return both responses.
+    A/B routing for the working Blackwell-safe deployment variants.
+
+    Instead of HF base-vs-adapter inference, this compares two GGUF-backed
+    NyayaGPT variants that are known to run reliably on this machine:
+      - "base"      -> FP16 GGUF reference
+      - "finetuned" -> INT4 GGUF deployment candidate
 
     Returns:
         (assigned_variant, base_response, finetuned_response, base_latency_ms, ft_latency_ms)
     """
     import mlflow
 
-    finetuned_model = finetuned_model or config.STUDENT_MODEL_NAME
-    adapter_dir     = adapter_dir     or config.ADAPTER_DIR
+    del base_model, finetuned_model, adapter_dir  # legacy args retained for notebook/API stability
     variant         = random.choice(["base", "finetuned"])
 
-    # Always generate both for side-by-side display
+    # Always generate both for side-by-side display. We avoid the HF/Unsloth
+    # path here because Blackwell + CUDA 12.8 hits a cuBLAS failure in decode.
     t0 = time.perf_counter()
-    base_resp = generate(question, base_model, adapter_dir=None, max_new_tokens=max_new_tokens)
+    base_resp = generate_gguf(
+        question,
+        NYAYAGPT_FP16_GGUF,
+        max_new_tokens=max_new_tokens,
+        temperature=0.0,
+    )
     base_ms   = (time.perf_counter() - t0) * 1000
 
     t0 = time.perf_counter()
-    ft_resp = generate(question, finetuned_model, adapter_dir=adapter_dir, max_new_tokens=max_new_tokens)
+    ft_resp = generate_gguf(
+        question,
+        NYAYAGPT_Q4_GGUF,
+        max_new_tokens=max_new_tokens,
+        temperature=0.0,
+    )
     ft_ms   = (time.perf_counter() - t0) * 1000
 
     # Log A/B event to MLflow
@@ -116,7 +196,12 @@ def ab_generate(
         mlflow.set_tracking_uri(config.MLFLOW_URI)
         mlflow.set_experiment(config.MLFLOW_EXPERIMENT_AB)
         with mlflow.start_run(run_name=f"ab_{variant}", nested=False):
-            mlflow.log_params({"variant": variant, "question_len": len(question)})
+            mlflow.log_params({
+                "variant": variant,
+                "question_len": len(question),
+                "base_engine": "gguf-fp16",
+                "finetuned_engine": "gguf-q4_k_m",
+            })
             mlflow.log_metrics({
                 "base_latency_ms":      base_ms,
                 "finetuned_latency_ms": ft_ms,
