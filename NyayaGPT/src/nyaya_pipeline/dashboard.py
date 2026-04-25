@@ -1,7 +1,11 @@
 """
 dashboard.py — Streamlit A/B test dashboard for NyayaGPT.
 
-Shows side-by-side responses from FP16 and INT4 GGUF NyayaGPT variants.
+Shows side-by-side responses from vanilla Mistral-7B-Instruct-v0.3 (base)
+vs NyayaGPT (fine-tuned), both at Q4_K_M quantization via llama.cpp.
+Same quantization + same prompt → every quality delta is attributable
+to fine-tuning on Indian legal data.
+
 Routes a random variant label and logs each request to MLflow.
 
 Run:
@@ -38,7 +42,7 @@ st.set_page_config(
 )
 
 st.title("⚖️ NyayaGPT — A/B Test Dashboard")
-st.caption("FP16 reference vs INT4 deployment candidate on Indian legal questions")
+st.caption("Base Mistral vs NyayaGPT (fine-tuned) — both Q4_K_M, same llama.cpp runtime, same prompt")
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -112,12 +116,12 @@ for entry in st.session_state["history"]:
     col_a, col_b = st.columns(2)
 
     with col_a:
-        st.markdown("#### 🔵 NyayaGPT FP16 (Reference)")
+        st.markdown("#### 🔵 Base Mistral (vanilla)")
         st.info(entry["base"])
         st.caption(f"Latency: {entry['base_ms']:.0f} ms")
 
     with col_b:
-        st.markdown("#### 🟢 NyayaGPT INT4 GGUF")
+        st.markdown("#### 🟢 NyayaGPT (fine-tuned)")
         st.success(entry["ft"])
         st.caption(f"Latency: {entry['ft_ms']:.0f} ms")
 
@@ -133,7 +137,7 @@ if st.session_state["history"]:
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total queries",         n)
-    c2.metric("INT4 served",           f"{served_ft}/{n}")
-    c3.metric("Avg FP16 latency",      f"{avg_base:.0f} ms")
-    c4.metric("Avg INT4 latency",      f"{avg_ft:.0f} ms",
+    c2.metric("NyayaGPT served",       f"{served_ft}/{n}")
+    c3.metric("Avg Base latency",      f"{avg_base:.0f} ms")
+    c4.metric("Avg NyayaGPT latency",  f"{avg_ft:.0f} ms",
               delta=f"{avg_ft - avg_base:+.0f} ms")

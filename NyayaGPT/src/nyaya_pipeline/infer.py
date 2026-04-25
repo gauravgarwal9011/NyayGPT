@@ -26,6 +26,7 @@ GGUF_SCRATCH_DIR = Path(os.environ.get("NY_GGUF_SCRATCH_DIR", "/mnt/f/NyayaGPT-s
 NYAYAGPT_FP16_GGUF = Path(os.environ.get("NY_FP16_GGUF_PATH", GGUF_SCRATCH_DIR / "nyayagpt-fp16.gguf"))
 NYAYAGPT_Q8_GGUF = Path(os.environ.get("NY_INT8_GGUF_PATH", GGUF_SCRATCH_DIR / "nyayagpt-q8_0.gguf"))
 NYAYAGPT_Q4_GGUF = Path(os.environ.get("NY_INT4_GGUF_PATH", config.ADAPTER_DIR / "nyayagpt-q4km.gguf"))
+MISTRAL_BASE_GGUF = Path(os.environ.get("NY_BASE_GGUF_PATH", GGUF_SCRATCH_DIR / "mistral-base-q4km.gguf"))
 
 
 def _load_model(model_name: str, adapter_dir: Optional[Path] = None):
@@ -156,12 +157,13 @@ def ab_generate(
     max_new_tokens: int = 256,
 ) -> Tuple[str, str, str, float, float]:
     """
-    A/B routing for the working Blackwell-safe deployment variants.
+    A/B routing comparing vanilla Mistral against NyayaGPT, both at Q4_K_M GGUF.
 
-    Instead of HF base-vs-adapter inference, this compares two GGUF-backed
-    NyayaGPT variants that are known to run reliably on this machine:
-      - "base"      -> FP16 GGUF reference
-      - "finetuned" -> INT4 GGUF deployment candidate
+    Uses identical quantization for both sides so the only variable is
+    fine-tuning itself — every quality delta is attributable to training on
+    Indian legal data:
+      - "base"      -> vanilla Mistral-7B-Instruct-v0.3 Q4_K_M GGUF
+      - "finetuned" -> NyayaGPT Q4_K_M GGUF
 
     Returns:
         (assigned_variant, base_response, finetuned_response, base_latency_ms, ft_latency_ms)
@@ -176,7 +178,7 @@ def ab_generate(
     t0 = time.perf_counter()
     base_resp = generate_gguf(
         question,
-        NYAYAGPT_FP16_GGUF,
+        MISTRAL_BASE_GGUF,
         max_new_tokens=max_new_tokens,
         temperature=0.0,
     )
@@ -199,8 +201,9 @@ def ab_generate(
             mlflow.log_params({
                 "variant": variant,
                 "question_len": len(question),
-                "base_engine": "gguf-fp16",
-                "finetuned_engine": "gguf-q4_k_m",
+                "base_engine": "gguf-q4_k_m-vanilla-mistral",
+                "finetuned_engine": "gguf-q4_k_m-nyaya",
+                "quantization": "Q4_K_M (same for both)",
             })
             mlflow.log_metrics({
                 "base_latency_ms":      base_ms,
