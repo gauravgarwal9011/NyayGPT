@@ -1,0 +1,104 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,margin=0.45in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{array}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\setlist[itemize]{leftmargin=1.1em, itemsep=1pt, topsep=0pt}
+\pagenumbering{gobble}
+
+\definecolor{heading}{HTML}{1F3A5F}
+
+\titleformat{\section}{\large\bfseries\color{heading}}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+
+\newcommand{\resumeSubheading}[4]{
+  \textbf{#1} \hfill #2 \\
+  \textit{#3} \hfill \textit{#4}
+}
+
+\newcommand{\projectHeading}[2]{
+  \textbf{#1} \hfill #2
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Gaurav Garwal}} \\
+    AI/ML Engineer \,|\, LLMs, RAG \& Agentic Systems \,|\, Indore, India \\
+    \href{tel:+918871219166}{+91 88712 19166} \,|\,
+    \href{mailto:gauravgarwal9011@gmail.com}{gauravgarwal9011@gmail.com} \,|\,
+    \href{https://www.github.com/gauravgarwal9011}{GitHub} \,|\,
+    \href{https://www.linkedin.com/in/gauravgarwal/}{LinkedIn} \,|\,
+    \href{https://huggingface.co/gauravgarwal/NyayaGPT-Mistral7B-adapter}{HuggingFace}
+\end{center}
+
+\section*{Summary}
+AI/ML Engineer specializing in LLM fine-tuning, retrieval-augmented generation, and multi-agent systems. Shipped \textbf{NyayaGPT}, a QLoRA fine-tuned Mistral-7B for Indian law with end-to-end FP16/INT8/INT4 GGUF quantization benchmark and MLOps stack, and an Azure OpenAI multi-agent due-diligence platform in production. Background: mechanical engineering $\rightarrow$ MBA (Analytics) $\rightarrow$ AI/ML.
+
+\section*{Core Skills}
+\textbf{LLMs \& GenAI:} QLoRA, LoRA, PEFT, Unsloth, GGUF/llama.cpp quantization (FP16/INT8/INT4), RAG, Multi-Agent Orchestration, Mistral, GPT-4o, Hugging Face \\
+\textbf{Frameworks:} LangChain, LangGraph, Haystack, FastAPI, Streamlit, PyTorch, Transformers, Scikit-learn \\
+\textbf{Vector \& Retrieval:} Pinecone, FAISS, ChromaDB, LanceDB, hybrid search, reranking \\
+\textbf{MLOps \& Eval:} MLflow, Langfuse, ROUGE, RAGAS, A/B evaluation, Docker, CI/CD, Git \\
+\textbf{Cloud \& Data:} Azure OpenAI, Azure Functions, Azure AI Foundry, Redis, Celery, Python, SQL, Pandas, NumPy
+
+\section*{Featured Projects}
+
+\projectHeading{NyayaGPT --- Indian Legal LLM with QLoRA Fine-Tuning, Quantization Benchmark \& MLOps}{\href{https://github.com/gauravgarwal9011/NyayGPT}{GitHub} \,|\, \href{https://huggingface.co/gauravgarwal/NyayaGPT-Mistral7B-adapter}{HF Adapter}}
+\begin{itemize}
+    \item Fine-tuned \textbf{Mistral-7B-Instruct-v0.3} (Unsloth + QLoRA, r=16, $\alpha$=32, 2 epochs) into a specialized Indian legal assistant on 1{,}690 instruction pairs (1{,}521 train / 169 eval) scraped from IndianKanoon and augmented via Azure OpenAI GPT-4o; achieved \textbf{ROUGE-1 = 0.57}, \textbf{ROUGE-L = 0.40}, \textbf{RAGAS Faithfulness = 0.66} on the held-out set.
+    \item Built a three-tier \textbf{FP16 / INT8 / INT4 (Q4\_K\_M)} GGUF quantization benchmark using llama.cpp custom CUDA kernels, delivering \textbf{3.3$\times$ memory reduction} (14.5 GB $\rightarrow$ 4.4 GB) and \textbf{2.2$\times$ faster inference} (10.8 $\rightarrow$ 4.9 ms/token) with \textbf{zero ROUGE-L degradation}.
+    \item Diagnosed a CUDA 12.8 / Blackwell (sm\_120) cuBLAS regression that broke every gemm code path on RTX 5090 (FP16/BF16/FP32, including bitsandbytes 4-bit); pivoted the entire inference stack to llama.cpp GGUF kernels as the only working path.
+    \item Shipped end-to-end MLOps: MLflow tracking across training/evaluation/A-B experiments, Streamlit dashboard for live \textbf{vanilla Mistral Q4 vs NyayaGPT Q4} apples-to-apples comparison, reproducible training/quantization scripts, and public \textbf{Hugging Face Hub} release of the LoRA adapter with model card.
+\end{itemize}
+
+\projectHeading{AI-Powered Due Diligence Agent --- Multi-Agent RAG Platform}{\href{https://github.com/gauravgarwal9011/due-diligence-agent}{GitHub}}
+\begin{itemize}
+    \item Architected a five-agent due-diligence platform on FastAPI + Azure OpenAI GPT-4o + ChromaDB, performing RAG over PDF/DOCX/CSV with inline-citation report generation; cut analyst research time by \textbf{60\%} on internal benchmarks.
+    \item Built the streaming and reliability layer: \textbf{Redis pub/sub + SSE} for token-level streaming, Celery task queues, Langfuse traces, hallucination detection, and PII redaction guardrails --- end-to-end report latency under \textbf{45 seconds}.
+\end{itemize}
+
+\projectHeading{English Speaking Assessment Agent --- Real-Time Voice Coach}{\href{https://github.com/gauravgarwal9011/English-Speaking-Assessment-Agent}{GitHub}}
+\begin{itemize}
+    \item Built an interactive English-speaking coach combining STT, TTS, and GPT-4o for real-time conversation and automated fluency scoring, with session persistence and progress tracking.
+\end{itemize}
+
+\projectHeading{Multimodal RAG --- Document Extraction, Summarization \& Retrieval}{\href{https://colab.research.google.com/drive/17X2a4DnVv8hmJB_-H1OjRcyG8gMubiAb?usp=sharing}{Colab}}
+\begin{itemize}
+    \item Multimodal RAG pipeline using Unstructured + LangChain to extract and index image, table, and text content from heterogeneous PDFs, with summary-level semantic retrieval over the multimodal corpus.
+\end{itemize}
+
+\projectHeading{Intelligent Route Guidance \& Productivity Assistant --- LangGraph + MS Graph}{\href{https://github.com/gauravgarwal9011/Intelligent-Route-Guidance-and-Productivity-Assistant}{GitHub}}
+\begin{itemize}
+    \item LangGraph application integrating MongoDB, Azure Functions, and Microsoft Graph API for route guidance, Outlook automation, and Teams scheduling; deployed serverlessly on Azure.
+\end{itemize}
+
+\section*{Work Experience}
+\resumeSubheading{AI/ML Engineer}{Jun 2025 -- Present}{Ignatiuz Software Solutions India Pvt Ltd}{Indore}
+\begin{itemize}
+    \item Lead engineer for the company's GenAI product line: shipped production LLM systems on FastAPI + Azure OpenAI + LangChain + FAISS/Pinecone, serving real-time document-intelligence and decision-support workflows for enterprise clients.
+    \item Designed and tuned RAG pipelines (chunking, hybrid retrieval, reranking, prompt grounding) and owned evaluation harnesses (RAGAS, custom rubrics) to systematically reduce hallucination on domain-specific queries.
+    \item Mentored junior team members on LLM application patterns, prompt engineering discipline, and evaluation-driven development.
+\end{itemize}
+
+\resumeSubheading{Design Engineer (NX CAD)}{2020 -- 2023}{Meena Shree Works}{Indore}
+\begin{itemize}
+    \item Pre--data-science career: designed precision tools and components in Siemens NX CAD for manufacturing clients.
+\end{itemize}
+
+\section*{Education}
+\textbf{MBA, Business Analytics \& Marketing} \hfill 2023 -- 2025 \\
+Devi Ahilya Vishwavidyalaya (DAVV), Indore \\[2pt]
+\textbf{Executive PG Certification, Data Science \& Artificial Intelligence} \hfill 2024 -- 2025 \\
+IIT Roorkee \& Intellipaat (DS \& AI Internship included)
+
+\end{document}

@@ -1,0 +1,40 @@
+# Canonical artifacts to share with every contact below:
+#   GitHub:  https://github.com/gauravgarwal9011/NyayGPT
+#   HF Hub:  https://huggingface.co/gauravgarwal/NyayaGPT-Mistral7B-adapter
+#   LinkedIn: https://www.linkedin.com/in/gauravgarwal/
+Priority,Company,Tier,Type,Location,Target_Role,Why_Fit,Hiring_Contact,Channel,JD_Link,Date_Applied,Status,Last_Activity,Notes
+1,Sarvam AI,A,Indian GenAI Startup,Bangalore,AI/ML Engineer - LLM,Indic LLM focus aligns with NyayaGPT,,LinkedIn DM + careers page,,,,Not Started,Top priority - Indic LLM specialization
+1,Krutrim (Ola),A,Indian GenAI Startup,Bangalore,LLM Engineer,Multilingual Indian LLM work,,LinkedIn DM,,,,Not Started,Reach out via Ola engineering blog authors
+1,AI4Bharat,A,Research/Open Source,Chennai/Remote,Research Engineer,IndicTrans / Indic NLP perfect fit,,Email + LinkedIn,,,,Not Started,Pratyush Kumar leads - public email available
+1,Google DeepMind India,S,MAANG,Bangalore,AI Resident / ML Engineer,Top tier - aspirational,,Referral required,,,,Not Started,Need warm referral - target alumni
+1,Microsoft IDC (AI),S,MAANG,Hyderabad/Bangalore,Applied Scientist / AI Engineer II,Azure stack matches my work,,Referral + careers,,,,Not Started,Azure OpenAI experience is direct match
+2,Adobe MDSR,A,MAANG-tier,Bangalore/Noida,ML Engineer,GenAI for creative tools,,Referral,,,,Not Started,Try LinkedIn DM to MDSR team
+2,Nvidia India,A,MAANG-tier,Bangalore/Pune,Solutions Architect / DL Engineer,GGUF/quantization work fits,,Referral,,,,Not Started,Quantization benchmark is the hook
+2,Anthropic,S,Frontier Lab,Remote (rare),ML Engineer,Long shot but worth applying,,Careers page,,,,Not Started,Apply only if remote-friendly role opens
+2,Cohere,A,Frontier Lab,Remote/India,Applied AI,RAG and enterprise focus,,Careers page,,,,Not Started,Watch for India-friendly roles
+2,Hugging Face,A,Open Source,Remote,ML Engineer / Open Source,My HF Hub artifacts help,,Careers page + community,,,,Not Started,Build profile on HF first
+3,Fractal Analytics,B,Indian Services,Bangalore/Mumbai,Senior Data Scientist - GenAI,GenAI practice growing fast,,LinkedIn + careers,,,,Not Started,Apply to GenAI practice specifically
+3,Quantiphi,B,Indian Services,Mumbai/Bangalore,ML Engineer - LLM,Strong GenAI portfolio,,LinkedIn + careers,,,,Not Started,
+3,Tiger Analytics,B,Indian Services,Chennai/Bangalore,Senior Analyst - AI/ML,GenAI for BFSI,,LinkedIn + careers,,,,Not Started,
+3,LatentView,B,Indian Services,Chennai/Bangalore,Senior Data Scientist,Growing GenAI capability,,LinkedIn + careers,,,,Not Started,
+3,Mu Sigma,B,Indian Services,Bangalore,Decision Scientist,Less GenAI focus but stable,,Careers page,,,,Not Started,Lower priority
+2,Razorpay,A,Indian Product,Bangalore,ML Engineer,Strong eng culture,,LinkedIn + careers,,,,Not Started,Fintech ML
+2,Flipkart,A,Indian Product,Bangalore,ML Engineer / Applied Scientist,Large scale AI/ML,,Referral preferred,,,,Not Started,
+2,Swiggy,A,Indian Product,Bangalore,ML Engineer,GenAI for support / ops,,Careers page,,,,Not Started,
+2,Zomato (Blinkit),A,Indian Product,Gurgaon/Bangalore,ML Engineer,Recent GenAI hires,,Careers page,,,,Not Started,
+2,Meesho,A,Indian Product,Bangalore,ML Engineer,Hindi-first NLP work,,Careers page,,,,Not Started,
+2,PhonePe,A,Indian Product,Bangalore,ML Engineer,Fraud + LLM ops,,Careers page,,,,Not Started,
+3,Yellow.ai,B,Conversational AI,Bangalore,LLM Engineer,Direct LLM/agent fit,,LinkedIn DM,,,,Not Started,
+3,Haptik (Jio),B,Conversational AI,Mumbai,LLM Engineer,Conversational AI,,Careers + LinkedIn,,,,Not Started,
+3,CoRover,B,Conversational AI,Bangalore,AI Engineer,IRCTC / Govt LLM use cases,,LinkedIn DM,,,,Not Started,Indian gov use cases
+3,Observe.AI,B,Conversational AI,Bangalore,ML Engineer,Speech + LLM,,Careers page,,,,Not Started,
+3,Niramai,B,Indian AI Product,Bangalore,ML Engineer,Healthcare AI,,LinkedIn DM,,,,Not Started,Lower fit but interesting
+3,Mad Street Den,B,Indian AI Product,Chennai,ML Engineer,Vision + retail,,Careers page,,,,Not Started,Not core LLM but eng quality high
+2,Together AI,A,Frontier Infra,Remote,ML Engineer / Applied AI,Open weights / inference,,Careers page,,,,Not Started,Quantization work directly relevant
+2,Replicate,B,Frontier Infra,Remote,ML Engineer,Model hosting,,Careers page,,,,Not Started,
+2,Modal Labs,B,Frontier Infra,Remote,Engineer,GPU infra,,Careers page,,,,Not Started,
+3,Uplers (AI vertical),C,Recruiter,Remote,Various - they place you,Bench placement,,Direct application,,,,Not Started,Get on bench
+3,Turing,C,Recruiter,Remote,Various - they place you,US/EU remote roles,,Apply on platform,,,,Not Started,Strong screening process
+3,Flexiple,C,Recruiter,Remote,Various - they place you,Indian + remote roles,,Apply on platform,,,,Not Started,
+3,Toptal,C,Recruiter,Remote,Various - they place you,Premium freelance/perm,,Apply on platform,,,,Not Started,Hard screening but high pay
+2,Y Combinator AI startups,B,YC Network,Remote/SF,Founding Engineer,Many India-friendly,,workatastartup.com,,,,Not Started,Filter W25/S25/W26 AI batches
